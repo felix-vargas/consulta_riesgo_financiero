@@ -1,4 +1,5 @@
 import {
+    Button,
     colorsTuple,
     createTheme,
     defaultVariantColorsResolver,
@@ -41,6 +42,13 @@ export const theme = createTheme({
     autoContrast: true,
     luminanceThreshold: 0.35,
     variantColorResolver,
+    components: {
+        Button: Button.extend({
+            defaultProps: {
+                variant: 'filled',
+            },
+        }),
+    },
     colors: {
         'favras-teal': [
             '#ebffff',
