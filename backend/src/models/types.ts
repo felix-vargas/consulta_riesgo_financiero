@@ -3,7 +3,7 @@ export type UserRole = 'admin' | 'user';
 export interface MockUser {
     id: string;
     username: string;
-    password: string;
+    passwordHash: string;
     name: string;
     role: UserRole;
     rut?: string;

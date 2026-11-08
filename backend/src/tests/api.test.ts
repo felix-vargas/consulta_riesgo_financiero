@@ -181,5 +181,14 @@ describe('Financial Risk Consultation API (Auth, RBAC & Deterministic Score)', (
             expect(invalidRutRes.status).toBe(400);
             expect(invalidRutRes.body.error).toBe('INVALID_RUT');
         });
+
+        it('sets OWASP security headers and hides x-powered-by', async () => {
+            const res = await request(app).get('/health');
+            expect(res.status).toBe(200);
+            expect(res.headers['x-powered-by']).toBeUndefined();
+            expect(res.headers['x-content-type-options']).toBe('nosniff');
+            expect(res.headers['x-frame-options']).toBe('DENY');
+            expect(res.headers['cache-control']).toContain('no-store');
+        });
     });
 });

@@ -25,15 +25,15 @@ export default function Shell({ children }: PropsWithChildren) {
       <AppShell.Header className={classes.header}>
         <Container className={classes['header-container']} size='md'>
           <div className={classes.brand}>
-            <CreditCardCheck size={24} />
+            <CreditCardCheck size={22} />
             <div>
               <Text
-                fw={700}
+                fw={500}
                 size='lg'
                 lh={1.1}
                 c='white'
                 ff='Montserrat, sans-serif'
-                style={{ letterSpacing: '-0.02em' }}
+                style={{ letterSpacing: '-0.05em', textTransform: 'uppercase' }}
               >
                 Score Financiero
               </Text>

@@ -79,13 +79,14 @@ export default function LoginView() {
     },
   });
 
-  const handleSubmit = async ({ username, password }: typeof form.values) => {
+    const handleSubmit = async ({ username, password }: typeof form.values) => {
     setAuthError(null);
     setSubmitting(true);
 
     await login(username, password, {
       onError: (message) => {
         setAuthError(message);
+        form.setFieldValue('password', '');
         form.setErrors({
           username: ' ',
           password: ' ',
@@ -112,7 +113,7 @@ export default function LoginView() {
           <Title order={2}>Inicia sesión</Title>
         </Group>
         <Text size='sm' c='dimmed' mb='lg'>
-          para evaluar tu score de riesgo financiero.
+          para consultar tu nivel de riesgo financiero.
         </Text>
 
         {authError && (
@@ -151,6 +152,7 @@ export default function LoginView() {
           <PasswordInput
             label='Contraseña'
             placeholder='Ingresa tu contraseña'
+            autoComplete='current-password'
             {...form.getInputProps('password')}
           />
 

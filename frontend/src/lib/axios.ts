@@ -5,6 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
 export const axiosBase = axios.create({
     baseURL: API_BASE_URL,
+    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -67,6 +68,14 @@ export function extractApiError(error: unknown): {
                 status: 403,
                 code: 'FORBIDDEN',
                 message: 'No tienes permisos para consultar el RUT solicitado.',
+            };
+        }
+
+        if (status === 429) {
+            return {
+                status: 429,
+                code: 'TOO_MANY_REQUESTS',
+                message: 'Demasiados intentos. Por favor, espera unos segundos antes de reintentar.',
             };
         }
 

@@ -89,7 +89,7 @@ const SAMPLE_RUTS = [
 ];
 
 export default function ScoreConsultationView() {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, logout } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
   const [scoreResult, setScoreResult] = useState<ScoreResponse | null>(null);
@@ -129,6 +129,10 @@ export default function ScoreConsultationView() {
     } catch (err) {
       const parsedError = extractApiError(err);
       setScoreResult(null);
+      if (parsedError.status === 401) {
+        logout();
+        return;
+      }
       setErrorState(parsedError);
     } finally {
       setLoading(false);
