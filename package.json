@@ -1,0 +1,20 @@
+{
+  "name": "consulta-riesgo-financiero",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MVP de Consulta de Riesgo Financiero con Node.js, Express, React, TypeScript y JWT RBAC",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n BACKEND,FRONTEND -c cyan,magenta \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspace=backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
