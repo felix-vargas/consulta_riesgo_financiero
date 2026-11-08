@@ -4,14 +4,31 @@ extend-exclude = [
     "node_modules/**",
     "dist/**",
     ".gitnexus/**",
+    ".claude/**",
+    "Context/**",
+    "AGENTS.md",
+    "CLAUDE.md",
 ]
 
 [default]
 locale = "en"
 
 [default.extend-words]
-# Valid Spanish domain terms used in the codebase that could be flagged as English typos
+# Valid Spanish words used in UI strings and documentation that resemble English words
+accesible = "accesible"
 ba = "ba"
+cliente = "cliente"
+comando = "comando"
+comercial = "comercial"
+componentes = "componentes"
+decisiones = "decisiones"
+dependencias = "dependencias"
+excede = "excede"
+historial = "historial"
+posible = "posible"
+previos = "previos"
+requiere = "requiere"
 rut = "rut"
 ruts = "ruts"
 serie = "serie"
+tema = "tema"

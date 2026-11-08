@@ -4,7 +4,7 @@ dist
 **/dist
 .git
 .gitignore
-Context
+/Context
 .env
 .env.*
 !**/.env.example
