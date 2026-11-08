@@ -2,7 +2,6 @@ import { AuthContext } from '@/context/AuthContext';
 import {
   AppShell,
   Avatar,
-  Badge,
   Box,
   Container,
   Group,
@@ -36,18 +35,6 @@ export default function Shell({ children }: PropsWithChildren) {
 
             {user && (
               <>
-                <Badge
-                  variant='filled'
-                  color={user.role === 'admin' ? 'yellow.5' : 'cyan.3'}
-                  c='dark.9'
-                  size='md'
-                  style={{
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.25)',
-                  }}
-                >
-                  Rol: {user.role.toUpperCase()}
-                </Badge>
-
                 <Menu withArrow position='bottom-end' shadow='md' width={230}>
                   <Menu.Target>
                     <UnstyledButton aria-label='Menú de usuario'>

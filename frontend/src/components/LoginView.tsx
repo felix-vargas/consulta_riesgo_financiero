@@ -1,4 +1,5 @@
 import { AuthContext } from '@/context/AuthContext';
+import { smartFormatRutOrIdentifier } from '@/utils/rut';
 import {
   Alert,
   Badge,
@@ -27,35 +28,31 @@ import { useContext, useState } from 'react';
 interface DemoAccount {
   label: string;
   role: 'admin' | 'user';
-  username: string;
+  loginIdentifier: string;
   password: string;
   rut?: string;
-  description: string;
 }
 
 const DEMO_ACCOUNTS: readonly DemoAccount[] = [
   {
     label: 'Ejecutivo',
     role: 'admin',
-    username: 'admin',
+    loginIdentifier: 'admin',
     password: 'AdminPassword123!',
-    description: 'Puede consultar el score de cualquier RUT de persona o empresa.',
   },
   {
     label: 'Juan Pérez',
     role: 'user',
-    username: 'usuario',
+    loginIdentifier: '12.345.678-9',
     password: 'UserPassword123!',
     rut: '12.345.678-9',
-    description: 'Solo autorizado para consultar su propio RUT (12.345.678-9).',
   },
   {
     label: 'Comercial Pepito SpA',
     role: 'user',
-    username: 'empresa',
+    loginIdentifier: '76.543.210-3',
     password: 'EmpresaPassword123!',
     rut: '76.543.210-3',
-    description: 'Solo autorizado para consultar su propio RUT (76.543.210-3).',
   },
 ];
 
@@ -71,7 +68,7 @@ export default function LoginView() {
       password: '',
     },
     validate: {
-      username: isNotEmpty('El nombre de usuario o RUT no puede estar vacío.'),
+      username: isNotEmpty('El RUT no puede estar vacío.'),
       password: (val) =>
         val.trim().length < 4
           ? 'La contraseña debe tener al menos 4 caracteres.'
@@ -100,7 +97,7 @@ export default function LoginView() {
     setAuthError(null);
     form.clearErrors();
     form.setValues({
-      username: account.username,
+      username: account.loginIdentifier,
       password: account.password,
     });
   };
@@ -129,9 +126,22 @@ export default function LoginView() {
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
-            label='Nombre de usuario o RUT'
-            placeholder='Ej: admin, usuario o 12.345.678-9'
-            {...form.getInputProps('username')}
+            label='RUT'
+            placeholder='12.345.678-9'
+            value={form.values.username}
+            error={form.errors.username}
+            onChange={(event) =>
+              form.setFieldValue(
+                'username',
+                smartFormatRutOrIdentifier(event.currentTarget.value)
+              )
+            }
+            onBlur={() =>
+              form.setFieldValue(
+                'username',
+                smartFormatRutOrIdentifier(form.values.username)
+              )
+            }
             mb='sm'
           />
 
@@ -156,7 +166,7 @@ export default function LoginView() {
 
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='sm'>
           {DEMO_ACCOUNTS.map((acc) => (
-            <Card key={acc.username} withBorder padding='sm' radius='md'>
+            <Card key={acc.loginIdentifier} withBorder padding='sm' radius='md'>
               <Stack gap={6} justify='space-between' h='100%'>
                 <div>
                   <Group justify='space-between' mb={4}>
@@ -192,7 +202,7 @@ export default function LoginView() {
                   }
                   onClick={() => fillDemoAccount(acc)}
                 >
-                  Cargar ({acc.username})
+                  Cargar
                 </Button>
               </Stack>
             </Card>
