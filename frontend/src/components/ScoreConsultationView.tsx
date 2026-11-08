@@ -281,15 +281,18 @@ export default function ScoreConsultationView() {
 
               {scoreResult && riskInfo && (
                 <Stack gap='md'>
-                  <Card withBorder radius='md' p='md'>
-                    <Group justify='space-between' align='center' wrap='nowrap'>
-                      <div>
-                        <Text size='xs' c='dimmed' tt='uppercase' fw={700}>
-                          RUT
-                        </Text>
-                        <Title order={2} mb={4}>
-                          {scoreResult.rut}
-                        </Title>
+                  <Card withBorder radius='md' p='lg'>
+                    <Group justify='space-between' align='center' wrap='nowrap' gap='md'>
+                      <Stack gap='sm' justify='center'>
+                        <div>
+                          <Text size='xs' c='dimmed' tt='uppercase' fw={700} lh={1.2}>
+                            RUT
+                          </Text>
+                          <Title order={2} lh={1.2}>
+                            {scoreResult.rut}
+                          </Title>
+                        </div>
+
                         <Group gap={6} align='center' wrap='nowrap'>
                           <Badge
                             color={riskInfo.color}
@@ -318,10 +321,17 @@ export default function ScoreConsultationView() {
                             </Text>
                           </Tooltip>
                         </Group>
-                      </div>
+
+                        <Group gap={6} c='dimmed' mt={2}>
+                          <CalendarClockIcon size={14} />
+                          <Text size='xs' fw={500}>
+                            {formatDisplayDate(scoreResult.fecha)}
+                          </Text>
+                        </Group>
+                      </Stack>
 
                       <RingProgress
-                        size={130}
+                        size={128}
                         thickness={12}
                         roundCaps
                         sections={[
@@ -332,21 +342,12 @@ export default function ScoreConsultationView() {
                             <Text fw={800} size='xl' lh={1}>
                               {scoreResult.score}
                             </Text>
-                            <Text size='xs' c='dimmed'>
+                            <Text size='xs' c='dimmed' mt={2}>
                               / 100
                             </Text>
                           </div>
                         }
                       />
-                    </Group>
-
-                    <Group justify='space-between' mt='sm'>
-                      <Group gap={6}>
-                        <CalendarClockIcon size={14} />
-                        <Text size='xs' fw={600}>
-                          {formatDisplayDate(scoreResult.fecha)}
-                        </Text>
-                      </Group>
                     </Group>
                   </Card>
 
