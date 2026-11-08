@@ -27,6 +27,7 @@ import { useContext, useState } from 'react';
 
 interface DemoAccount {
   label: string;
+  subtitle: string;
   role: 'admin' | 'user';
   loginIdentifier: string;
   password: string;
@@ -36,12 +37,14 @@ interface DemoAccount {
 const DEMO_ACCOUNTS: readonly DemoAccount[] = [
   {
     label: 'Ejecutivo',
+    subtitle: 'Acceso global',
     role: 'admin',
     loginIdentifier: 'admin',
     password: 'AdminPassword123!',
   },
   {
     label: 'Juan Pérez',
+    subtitle: '12.345.678-9',
     role: 'user',
     loginIdentifier: '12.345.678-9',
     password: 'UserPassword123!',
@@ -49,6 +52,7 @@ const DEMO_ACCOUNTS: readonly DemoAccount[] = [
   },
   {
     label: 'Comercial Pepito SpA',
+    subtitle: '76.543.210-3',
     role: 'user',
     loginIdentifier: '76.543.210-3',
     password: 'EmpresaPassword123!',
@@ -167,24 +171,26 @@ export default function LoginView() {
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='sm'>
           {DEMO_ACCOUNTS.map((acc) => (
             <Card key={acc.loginIdentifier} withBorder padding='sm' radius='md'>
-              <Stack gap={6} justify='space-between' h='100%'>
+              <Stack gap='xs' justify='space-between' h='100%'>
                 <div>
-                  <Group justify='space-between' mb={4}>
-                    <Badge
-                      size='xs'
-                      color={acc.role === 'admin' ? 'yellow.5' : 'teal'}
-                      variant='filled'
-                    >
-                      {acc.role.toUpperCase()}
-                    </Badge>
-                    {acc.rut && (
-                      <Text size='xs' fw={600} c='dimmed'>
-                        {acc.rut}
-                      </Text>
-                    )}
-                  </Group>
-                  <Text fw={600} size='sm'>
+                  <Badge
+                    size='xs'
+                    variant='dot'
+                    color={acc.role === 'admin' ? 'yellow' : 'teal'}
+                    mb={6}
+                  >
+                    {acc.role.toUpperCase()}
+                  </Badge>
+                  <Text fw={600} size='sm' lh={1.25}>
                     {acc.label}
+                  </Text>
+                  <Text
+                    size='xs'
+                    c='dimmed'
+                    ff={acc.rut ? 'monospace' : undefined}
+                    mt={2}
+                  >
+                    {acc.subtitle}
                   </Text>
                 </div>
 
@@ -192,7 +198,6 @@ export default function LoginView() {
                   variant='light'
                   size='xs'
                   fullWidth
-                  mt='xs'
                   leftSection={
                     acc.role === 'admin' ? (
                       <ShieldAlertIcon size={14} />

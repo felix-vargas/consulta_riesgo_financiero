@@ -2,8 +2,10 @@ import { AuthContext } from '@/context/AuthContext';
 import {
   AppShell,
   Avatar,
+  Badge,
   Box,
   Container,
+  Divider,
   Group,
   Menu,
   Text,
@@ -34,49 +36,52 @@ export default function Shell({ children }: PropsWithChildren) {
             <ColorSchemeToggle />
 
             {user && (
-              <>
-                <Menu withArrow position='bottom-end' shadow='md' width={230}>
-                  <Menu.Target>
-                    <UnstyledButton aria-label='Menú de usuario'>
-                      <Avatar
-                        color='teal.9'
-                        radius='xl'
-                        variant='filled'
-                        style={{
-                          cursor: 'pointer',
-                          border: '2px solid rgba(255, 255, 255, 0.75)',
-                        }}
-                      >
-                        {user.name.slice(0, 2).toUpperCase()}
-                      </Avatar>
-                    </UnstyledButton>
-                  </Menu.Target>
+              <Menu withArrow position='bottom-end' shadow='md' width={240}>
+                <Menu.Target>
+                  <UnstyledButton aria-label='Menú de usuario'>
+                    <Avatar
+                      color='teal.9'
+                      radius='xl'
+                      variant='filled'
+                      style={{
+                        cursor: 'pointer',
+                        border: '2px solid rgba(255, 255, 255, 0.75)',
+                      }}
+                    >
+                      {user.name.slice(0, 2).toUpperCase()}
+                    </Avatar>
+                  </UnstyledButton>
+                </Menu.Target>
 
-                  <Menu.Dropdown>
-                    <Menu.Label>Sesión activa</Menu.Label>
-                    <Box px='sm' pb='xs'>
-                      <Text fw={600} size='sm'>
+                <Menu.Dropdown>
+                  <Menu.Label>Sesión activa</Menu.Label>
+                  <Box px='sm' pb='xs'>
+                    <Group justify='space-between' align='center' wrap='nowrap' mb={4}>
+                      <Text fw={600} size='sm' truncate>
                         {user.name}
                       </Text>
-                      <Text size='xs' c='dimmed'>
-                        Usuario: {user.username}
-                      </Text>
-                      {user.rut && (
-                        <Text size='xs' c='dimmed'>
-                          RUT: {user.rut}
-                        </Text>
-                      )}
-                    </Box>
-                    <Menu.Item
-                      color='red'
-                      leftSection={<LogOutIcon size='1rem' />}
-                      onClick={logout}
-                    >
-                      Cerrar sesión
-                    </Menu.Item>
-                  </Menu.Dropdown>
-                </Menu>
-              </>
+                      <Badge
+                        size='xs'
+                        variant='dot'
+                        color={user.role === 'admin' ? 'yellow' : 'teal'}
+                      >
+                        {user.role.toUpperCase()}
+                      </Badge>
+                    </Group>
+                    <Text size='xs' c='dimmed' ff='monospace'>
+                      {user.rut ? `RUT: ${user.rut}` : `Usuario: ${user.username}`}
+                    </Text>
+                  </Box>
+                  <Divider my={4} />
+                  <Menu.Item
+                    color='red'
+                    leftSection={<LogOutIcon size='1rem' />}
+                    onClick={logout}
+                  >
+                    Cerrar sesión
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
             )}
           </Group>
         </Container>

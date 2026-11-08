@@ -19,16 +19,19 @@ import {
   Text,
   TextInput,
   Title,
+  UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import {
   AlertTriangleIcon,
   CalendarClockIcon,
+  ChevronRightIcon,
   FileJsonIcon,
   LockIcon,
   SearchIcon,
 } from 'lucide-react';
 import { useContext, useState } from 'react';
+import classes from './ScoreConsultationView.module.css';
 
 interface QueryHistoryItem extends ScoreResponse {
   status: 'OK';
@@ -78,9 +81,9 @@ function getRiskEvaluation(score: number): {
 }
 
 const SAMPLE_RUTS = [
-  { rut: '12.345.678-9', label: '12.345.678-9 (RUT Juan Pérez / Ejemplo PDF)' },
-  { rut: '76.543.210-3', label: '76.543.210-3 (RUT Comercial Pepito SpA)' },
-  { rut: '11.111.111-1', label: '11.111.111-1 (RUT Tercero Externo)' },
+  { rut: '12.345.678-9', name: 'Juan Pérez' },
+  { rut: '76.543.210-3', name: 'Comercial Pepito SpA' },
+  { rut: '11.111.111-1', name: 'Tercero Externo' },
 ];
 
 export default function ScoreConsultationView() {
@@ -147,20 +150,28 @@ export default function ScoreConsultationView() {
   return (
     <Container size='md'>
       <Stack gap='lg'>
-
         <Grid gutter='lg'>
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Paper withBorder p='lg' radius='lg' shadow='sm' h='100%'>
-              <Title order={3} mb='xs'>
-                Consulta tu riesgo financiero
-              </Title>
+              <Group justify='space-between' align='center' mb='xs'>
+                <Title order={3}>Consulta tu riesgo financiero</Title>
+                {user && (
+                  <Badge
+                    size='xs'
+                    variant='dot'
+                    color={user.role === 'admin' ? 'yellow' : 'teal'}
+                  >
+                    {user.role.toUpperCase()}
+                  </Badge>
+                )}
+              </Group>
               <Text size='sm' c='dimmed' mb='md'>
                 Obtén un resultado entre 0 y 100, indicando tu nivel de riesgo financiero.
               </Text>
 
               <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
-                  label='RUT a consultar'
+                  label='RUT'
                   placeholder='12.345.678-9'
                   size='md'
                   value={form.values.rut}
@@ -197,25 +208,33 @@ export default function ScoreConsultationView() {
                   const isAllowed = user?.role === 'admin' || isOwnRut;
 
                   return (
-                    <Button
+                    <UnstyledButton
                       key={sample.rut}
-                      variant='light'
-                      color={isAllowed ? 'teal' : 'orange'}
-                      size='xs'
-                      justify='space-between'
-                      rightSection={
-                        <Badge
-                          size='xs'
-                          color={isAllowed ? 'teal' : 'red'}
-                          variant='filled'
-                        >
-                          {isAllowed ? 'Permitido (200)' : 'Bloqueado (403)'}
-                        </Badge>
-                      }
+                      className={classes.sampleRow}
                       onClick={() => handleQuickRutSelect(sample.rut)}
                     >
-                      {sample.label}
-                    </Button>
+                      <Group justify='space-between' align='center' wrap='nowrap'>
+                        <div>
+                          <Text fw={600} size='sm' lh={1.25}>
+                            {sample.name}
+                          </Text>
+                          <Text size='xs' c='dimmed' ff='monospace' mt={2}>
+                            {sample.rut}
+                          </Text>
+                        </div>
+
+                        <Group gap='xs' wrap='nowrap'>
+                          <Badge
+                            size='xs'
+                            variant='dot'
+                            color={isAllowed ? 'teal' : 'red'}
+                          >
+                            {isAllowed ? 'Permitido' : 'Restringido'}
+                          </Badge>
+                          <ChevronRightIcon size={15} className={classes.chevron} />
+                        </Group>
+                      </Group>
+                    </UnstyledButton>
                   );
                 })}
               </Stack>
@@ -262,7 +281,7 @@ export default function ScoreConsultationView() {
                     <Group justify='space-between' align='center' wrap='nowrap'>
                       <div>
                         <Text size='xs' c='dimmed' tt='uppercase' fw={700}>
-                          RUT Consultado
+                          RUT
                         </Text>
                         <Title order={2} mb={4}>
                           {scoreResult.rut}
@@ -299,17 +318,13 @@ export default function ScoreConsultationView() {
                       />
                     </Group>
 
-
                     <Group justify='space-between' mt='sm'>
                       <Group gap={6}>
                         <CalendarClockIcon size={14} />
-                        <Text size='xs' c='dimmed'>
-                          Fecha de consulta:
+                        <Text size='xs' fw={600}>
+                          {formatDisplayDate(scoreResult.fecha)}
                         </Text>
                       </Group>
-                      <Text size='xs' fw={600}>
-                        {formatDisplayDate(scoreResult.fecha)}
-                      </Text>
                     </Group>
                   </Card>
 
@@ -317,7 +332,7 @@ export default function ScoreConsultationView() {
                     <Group gap={6} mb={4}>
                       <FileJsonIcon size={14} />
                       <Text size='xs' fw={600} c='dimmed'>
-                        Payload
+                        JSON
                       </Text>
                     </Group>
                     <Code block>
@@ -357,7 +372,7 @@ export default function ScoreConsultationView() {
               <Table.Tbody>
                 {history.map((item) => (
                   <Table.Tr key={item.rut}>
-                    <Table.Td fw={600}>{item.rut}</Table.Td>
+                    <Table.Td>{item.rut}</Table.Td>
                     <Table.Td>
                       <Badge color={getRiskEvaluation(item.score).color} variant='light'>
                         {item.score} / 100
