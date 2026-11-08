@@ -19,7 +19,6 @@ import { isNotEmpty, useForm } from '@mantine/form';
 import {
   AlertCircleIcon,
   ArrowRight,
-  KeyRoundIcon,
   ShieldAlertIcon,
   UserCheckIcon,
 } from 'lucide-react';
@@ -36,14 +35,14 @@ interface DemoAccount {
 
 const DEMO_ACCOUNTS: readonly DemoAccount[] = [
   {
-    label: 'Ejecutivo Riesgo (Admin)',
+    label: 'Ejecutivo',
     role: 'admin',
     username: 'admin',
     password: 'AdminPassword123!',
     description: 'Puede consultar el score de cualquier RUT de persona o empresa.',
   },
   {
-    label: 'Juan Pérez (Usuario)',
+    label: 'Juan Pérez',
     role: 'user',
     username: 'usuario',
     password: 'UserPassword123!',
@@ -51,7 +50,7 @@ const DEMO_ACCOUNTS: readonly DemoAccount[] = [
     description: 'Solo autorizado para consultar su propio RUT (12.345.678-9).',
   },
   {
-    label: 'Comercial Andina SpA (Usuario)',
+    label: 'Comercial Pepito SpA',
     role: 'user',
     username: 'empresa',
     password: 'EmpresaPassword123!',
@@ -110,13 +109,10 @@ export default function LoginView() {
     <Container size='sm' py='md'>
       <Paper withBorder p='xl' radius='lg' shadow='sm'>
         <Group justify='space-between' mb='xs'>
-          <Title order={2}>Iniciar sesión</Title>
-          <Badge variant='light' color='teal' leftSection={<KeyRoundIcon size={12} />}>
-            Autenticación JWT
-          </Badge>
+          <Title order={2}>Inicia sesión</Title>
         </Group>
         <Text size='sm' c='dimmed' mb='lg'>
-          Ingresa con tus credenciales para evaluar el score de riesgo financiero por RUT.
+          para evaluar tu score de riesgo financiero.
         </Text>
 
         {authError && (
@@ -156,7 +152,7 @@ export default function LoginView() {
           </Button>
         </form>
 
-        <Divider label='Credenciales Mock para Evaluación Rápida' labelPosition='center' my='lg' />
+        <Divider label='Credenciales de prueba' labelPosition='center' my='lg' />
 
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='sm'>
           {DEMO_ACCOUNTS.map((acc) => (
@@ -166,8 +162,8 @@ export default function LoginView() {
                   <Group justify='space-between' mb={4}>
                     <Badge
                       size='xs'
-                      color={acc.role === 'admin' ? 'yellow' : 'teal'}
-                      variant='light'
+                      color={acc.role === 'admin' ? 'yellow.5' : 'teal'}
+                      variant='filled'
                     >
                       {acc.role.toUpperCase()}
                     </Badge>
@@ -179,9 +175,6 @@ export default function LoginView() {
                   </Group>
                   <Text fw={600} size='sm'>
                     {acc.label}
-                  </Text>
-                  <Text size='xs' c='dimmed' mt={2}>
-                    {acc.description}
                   </Text>
                 </div>
 

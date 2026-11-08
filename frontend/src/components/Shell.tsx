@@ -5,7 +5,6 @@ import {
   Badge,
   Box,
   Container,
-  Divider,
   Group,
   Menu,
   Text,
@@ -26,43 +25,47 @@ export default function Shell({ children }: PropsWithChildren) {
           <div className={classes.brand}>
             <ShieldCheckIcon size={24} />
             <div>
-              <Text fw={700} size='md' lh={1.1} c='white'>
-                ProntoPaga Risk
-              </Text>
-              <Text size='xs' c='rgba(255, 255, 255, 0.8)' lh={1.1}>
+              <Text fw={600} size='lg' lh={1.1} c='white'>
                 Consulta de Riesgo Financiero
               </Text>
             </div>
           </div>
 
           <Group gap='sm'>
+            <ColorSchemeToggle />
+
             {user && (
-              <Badge
-                variant='light'
-                color={user.role === 'admin' ? 'yellow' : 'cyan'}
-                size='md'
-              >
-                Rol: {user.role.toUpperCase()}
-              </Badge>
-            )}
+              <>
+                <Badge
+                  variant='filled'
+                  color={user.role === 'admin' ? 'yellow.5' : 'cyan.3'}
+                  c='dark.9'
+                  size='md'
+                  style={{
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.25)',
+                  }}
+                >
+                  Rol: {user.role.toUpperCase()}
+                </Badge>
 
-            <Menu withArrow position='bottom-end' shadow='md' width={230}>
-              <Menu.Target>
-                <UnstyledButton aria-label='Menú de usuario'>
-                  <Avatar
-                    color='teal'
-                    radius='xl'
-                    variant='filled'
-                    style={{ cursor: 'pointer', border: '2px solid rgba(255,255,255,0.6)' }}
-                  >
-                    {user ? user.name.slice(0, 2).toUpperCase() : 'PP'}
-                  </Avatar>
-                </UnstyledButton>
-              </Menu.Target>
+                <Menu withArrow position='bottom-end' shadow='md' width={230}>
+                  <Menu.Target>
+                    <UnstyledButton aria-label='Menú de usuario'>
+                      <Avatar
+                        color='teal.9'
+                        radius='xl'
+                        variant='filled'
+                        style={{
+                          cursor: 'pointer',
+                          border: '2px solid rgba(255, 255, 255, 0.75)',
+                        }}
+                      >
+                        {user.name.slice(0, 2).toUpperCase()}
+                      </Avatar>
+                    </UnstyledButton>
+                  </Menu.Target>
 
-              <Menu.Dropdown>
-                {user && (
-                  <>
+                  <Menu.Dropdown>
                     <Menu.Label>Sesión activa</Menu.Label>
                     <Box px='sm' pb='xs'>
                       <Text fw={600} size='sm'>
@@ -84,15 +87,10 @@ export default function Shell({ children }: PropsWithChildren) {
                     >
                       Cerrar sesión
                     </Menu.Item>
-                    <Divider my='xs' />
-                  </>
-                )}
-                <Menu.Label>Tema visual</Menu.Label>
-                <Box px='sm' py='xs'>
-                  <ColorSchemeToggle />
-                </Box>
-              </Menu.Dropdown>
-            </Menu>
+                  </Menu.Dropdown>
+                </Menu>
+              </>
+            )}
           </Group>
         </Container>
       </AppShell.Header>

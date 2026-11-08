@@ -66,7 +66,7 @@ function getRiskEvaluation(score: number): {
 
 const SAMPLE_RUTS = [
   { rut: '12.345.678-9', label: '12.345.678-9 (RUT Juan Pérez / Ejemplo PDF)' },
-  { rut: '76.543.210-3', label: '76.543.210-3 (RUT Comercial Andina SpA)' },
+  { rut: '76.543.210-3', label: '76.543.210-3 (RUT Comercial Pepito SpA)' },
   { rut: '11.111.111-1', label: '11.111.111-1 (RUT Tercero Externo)' },
 ];
 
@@ -141,8 +141,8 @@ export default function ScoreConsultationView() {
                 <UserIcon size={18} />
                 <Title order={4}>{user?.name}</Title>
                 <Badge
-                  color={user?.role === 'admin' ? 'yellow' : 'teal'}
-                  variant='light'
+                  color={user?.role === 'admin' ? 'yellow.5' : 'teal'}
+                  variant='filled'
                 >
                   Rol: {user?.role}
                 </Badge>
