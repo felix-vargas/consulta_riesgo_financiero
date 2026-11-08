@@ -29,7 +29,7 @@ export class ScoreService {
         if (!isValidRut(rawRut)) {
             throw new HttpException(
                 400,
-                `El RUT "${rawRut}" no tiene un formato o dígito verificador chileno válido.`,
+                'El RUT ingresado no tiene un formato chileno válido.',
                 'INVALID_RUT'
             );
         }

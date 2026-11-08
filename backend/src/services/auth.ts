@@ -150,7 +150,7 @@ export class AuthService {
     }
 
     /**
-     * Verifies JWT signature, algorithm allowlist (HS256), and expiration, returning the typed payload.
+     * Verifies JWT signature, algorithm allowlist (HS256), issuer, audience, and expiration, returning the typed payload.
      */
     public verifyToken(token: string): JwtTokenPayload {
         const settings = getSettings();
@@ -158,6 +158,8 @@ export class AuthService {
         try {
             const decoded = jwt.verify(token, settings.jwtSecret, {
                 algorithms: ['HS256'],
+                issuer: JWT_ISSUER,
+                audience: JWT_AUDIENCE,
             });
             if (
                 typeof decoded !== 'object' ||

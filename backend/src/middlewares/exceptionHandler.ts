@@ -37,6 +37,14 @@ export const exceptionHandler: ErrorRequestHandler = (
         return;
     }
 
+    if (err instanceof SyntaxError && 'status' in err && err.status === 400) {
+        res.status(400).json({
+            error: 'MALFORMED_JSON',
+            message: 'El cuerpo de la solicitud no es un JSON válido.',
+        });
+        return;
+    }
+
     if (err instanceof ZodError) {
         const firstIssue = err.issues[0];
         res.status(400).json({

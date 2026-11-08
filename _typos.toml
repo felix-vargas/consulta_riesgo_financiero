@@ -1,0 +1,17 @@
+[files]
+extend-exclude = [
+    "package-lock.json",
+    "node_modules/**",
+    "dist/**",
+    ".gitnexus/**",
+]
+
+[default]
+locale = "en"
+
+[default.extend-words]
+# Valid Spanish domain terms used in the codebase that could be flagged as English typos
+ba = "ba"
+rut = "rut"
+ruts = "ruts"
+serie = "serie"

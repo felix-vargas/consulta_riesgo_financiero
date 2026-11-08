@@ -77,7 +77,12 @@ describe('Financial Risk Consultation API (Auth, RBAC & Deterministic Score)', (
             const expiredToken = jwt.sign(
                 { sub: 'usr-client-01', role: 'user', rut: '12.345.678-9' },
                 getSettings().jwtSecret,
-                { expiresIn: -10 }
+                {
+                    algorithm: 'HS256',
+                    expiresIn: -10,
+                    issuer: 'riesgo-financiero-api',
+                    audience: 'riesgo-financiero-spa',
+                }
             );
 
             const expiredRes = await request(app)
