@@ -1,6 +1,6 @@
 {
   "name": "consulta-riesgo-financiero",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "MVP de Consulta de Riesgo Financiero con Node.js, Express, React, TypeScript y JWT RBAC",
   "workspaces": [

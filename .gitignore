@@ -8,3 +8,7 @@ coverage/
 *.log
 *.tsbuildinfo
 .DS_Store
+.gitnexus
+.claude
+AGENTS.md
+CLAUDE.md
