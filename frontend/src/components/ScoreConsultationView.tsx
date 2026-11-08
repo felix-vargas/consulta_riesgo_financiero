@@ -19,6 +19,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -26,6 +27,7 @@ import {
   AlertTriangleIcon,
   CalendarClockIcon,
   ChevronRightIcon,
+  CircleHelpIcon,
   FileJsonIcon,
   LockIcon,
   SearchIcon,
@@ -61,7 +63,7 @@ function getRiskEvaluation(score: number): {
 } {
   if (score >= 70) {
     return {
-      label: 'Bajo riesgo',
+      label: 'Riesgo Bajo',
       color: 'teal',
       description: 'Comportamiento financiero favorable con alta capacidad crediticia.',
     };
@@ -288,16 +290,34 @@ export default function ScoreConsultationView() {
                         <Title order={2} mb={4}>
                           {scoreResult.rut}
                         </Title>
-                        <Badge
-                          color={riskInfo.color}
-                          variant='light'
-                          size='lg'
-                        >
-                          {riskInfo.label}
-                        </Badge>
-                        <Text size='xs' c='dimmed' mt='xs'>
-                          {riskInfo.description}
-                        </Text>
+                        <Group gap={6} align='center' wrap='nowrap'>
+                          <Badge
+                            color={riskInfo.color}
+                            variant='light'
+                            size='lg'
+                          >
+                            {riskInfo.label}
+                          </Badge>
+                          <Tooltip
+                            label={riskInfo.description}
+                            withArrow
+                            multiline
+                            w={240}
+                          >
+                            <Text
+                              component='span'
+                              c='dimmed'
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                cursor: 'help',
+                              }}
+                              aria-label='Información sobre el nivel de riesgo'
+                            >
+                              <CircleHelpIcon size={16} />
+                            </Text>
+                          </Tooltip>
+                        </Group>
                       </div>
 
                       <RingProgress
