@@ -60,6 +60,21 @@ El proyecto está organizado como un **monorepo con npm workspaces** (`backend` 
 
 ---
 
+## Ejecución con Docker (Contenedores Aislados)
+
+Para mayor portabilidad y seguridad (imágenes *multi-stage* corriendo con usuarios sin privilegios `node` y `nginxinc/nginx-unprivileged`, healthchecks y reverse proxy Nginx integrado), puedes levantar toda la plataforma con Docker Compose:
+
+```bash
+docker compose up --build
+```
+*(O mediante el script de conveniencia `npm run docker:up`)*
+
+- **Frontend SPA (Nginx unprivileged):** `http://localhost:5173`
+- **Backend API REST (Node.js 22 Alpine):** `http://localhost:4000`
+- Para detener los contenedores: `docker compose down` (o `npm run docker:down`).
+
+---
+
 ## Credenciales Mock de Prueba
 
 La interfaz de inicio de sesión incluye tarjetas de carga rápida para probar inmediatamente los distintos roles y reglas de autorización:
