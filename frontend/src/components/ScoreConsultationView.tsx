@@ -13,7 +13,6 @@ import {
   Grid,
   Group,
   Paper,
-  Progress,
   RingProgress,
   Stack,
   Table,
@@ -25,17 +24,31 @@ import { useForm } from '@mantine/form';
 import {
   AlertTriangleIcon,
   CalendarClockIcon,
-  CheckCircle2Icon,
   FileJsonIcon,
   LockIcon,
   SearchIcon,
-  ShieldCheckIcon,
-  UserIcon,
 } from 'lucide-react';
 import { useContext, useState } from 'react';
 
 interface QueryHistoryItem extends ScoreResponse {
   status: 'OK';
+}
+
+function formatDisplayDate(isoString: string): string {
+  const match = isoString.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/
+  );
+  if (match) {
+    const [, year, month, day, hours, minutes, seconds] = match;
+    return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
+  }
+
+  const parsed = new Date(isoString);
+  if (Number.isNaN(parsed.getTime())) {
+    return isoString;
+  }
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(parsed.getUTCDate())}/${pad(parsed.getUTCMonth() + 1)}/${parsed.getUTCFullYear()} - ${pad(parsed.getUTCHours())}:${pad(parsed.getUTCMinutes())}:${pad(parsed.getUTCSeconds())}`;
 }
 
 function getRiskEvaluation(score: number): {
@@ -45,22 +58,22 @@ function getRiskEvaluation(score: number): {
 } {
   if (score >= 70) {
     return {
-      label: 'Riesgo Bajo — Perfil Sólido',
+      label: 'Bajo riesgo',
       color: 'teal',
       description: 'Comportamiento financiero favorable con alta capacidad crediticia.',
     };
   }
   if (score >= 40) {
     return {
-      label: 'Riesgo Moderado — Revisión Estándar',
+      label: 'Riesgo Moderado',
       color: 'yellow',
       description: 'Indicadores crediticios intermedios; sujeto a evaluación de garantías.',
     };
   }
   return {
-    label: 'Riesgo Alto — Alerta Crediticia',
+    label: 'Riesgo Alto',
     color: 'red',
-    description: 'Score bajo el umbral recomendado; requiere aprobación de comité de riesgo.',
+    description: 'Indicadores crediticios bajos; requiere aprobación de comité de riesgo.',
   };
 }
 
@@ -71,7 +84,7 @@ const SAMPLE_RUTS = [
 ];
 
 export default function ScoreConsultationView() {
-  const { user, token, logout } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
   const [scoreResult, setScoreResult] = useState<ScoreResponse | null>(null);
@@ -134,45 +147,15 @@ export default function ScoreConsultationView() {
   return (
     <Container size='md'>
       <Stack gap='lg'>
-        <Paper withBorder p='lg' radius='lg' shadow='xs'>
-          <Group justify='space-between' align='flex-start'>
-            <div>
-              <Group gap='xs' mb={4}>
-                <UserIcon size={18} />
-                <Title order={4}>{user?.name}</Title>
-                <Badge
-                  color={user?.role === 'admin' ? 'yellow.5' : 'teal'}
-                  variant='filled'
-                >
-                  Rol: {user?.role}
-                </Badge>
-                {user?.rut && (
-                  <Badge color='gray' variant='outline'>
-                    RUT Token: {user.rut}
-                  </Badge>
-                )}
-              </Group>
-              <Text size='sm' c='dimmed'>
-                {user?.role === 'admin'
-                  ? 'Permisos de Administrador: Puedes consultar el score crediticio de cualquier RUT.'
-                  : `Permisos de Usuario: Solo estás autorizado para consultar tu propio RUT (${user?.rut}). Consultar otro RUT retornará 403 Forbidden.`}
-              </Text>
-            </div>
-
-            <Button variant='subtle' color='red' size='xs' onClick={logout}>
-              Cambiar cuenta
-            </Button>
-          </Group>
-        </Paper>
 
         <Grid gutter='lg'>
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Paper withBorder p='lg' radius='lg' shadow='sm' h='100%'>
               <Title order={3} mb='xs'>
-                Consulta de Score por RUT
+                Consulta tu riesgo financiero
               </Title>
               <Text size='sm' c='dimmed' mb='md'>
-                El cálculo es determinista: un mismo RUT siempre retorna el mismo score entre 0 y 100.
+                Obtén un resultado entre 0 y 100, indicando tu nivel de riesgo financiero.
               </Text>
 
               <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -198,12 +181,12 @@ export default function ScoreConsultationView() {
                   loading={loading}
                   leftSection={<SearchIcon size={18} />}
                 >
-                  Consultar Score Financiero
+                  Consultar
                 </Button>
               </form>
 
               <Divider
-                label='RUTs de Prueba (Testear Autorización RBAC)'
+                label='RUTs de Prueba'
                 labelPosition='center'
                 my='lg'
               />
@@ -242,7 +225,7 @@ export default function ScoreConsultationView() {
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Paper withBorder p='lg' radius='lg' shadow='sm' h='100%'>
               <Title order={3} mb='md'>
-                Resultado de Evaluación
+                Resultado
               </Title>
 
               {errorState && (
@@ -288,7 +271,6 @@ export default function ScoreConsultationView() {
                           color={riskInfo.color}
                           variant='light'
                           size='lg'
-                          leftSection={<CheckCircle2Icon size={14} />}
                         >
                           {riskInfo.label}
                         </Badge>
@@ -317,23 +299,16 @@ export default function ScoreConsultationView() {
                       />
                     </Group>
 
-                    <Progress
-                      value={scoreResult.score}
-                      color={riskInfo.color}
-                      size='sm'
-                      radius='xl'
-                      mt='md'
-                    />
 
                     <Group justify='space-between' mt='sm'>
                       <Group gap={6}>
                         <CalendarClockIcon size={14} />
                         <Text size='xs' c='dimmed'>
-                          Fecha evaluación (UTC):
+                          Fecha de consulta:
                         </Text>
                       </Group>
                       <Text size='xs' fw={600}>
-                        {scoreResult.fecha}
+                        {formatDisplayDate(scoreResult.fecha)}
                       </Text>
                     </Group>
                   </Card>
@@ -342,7 +317,7 @@ export default function ScoreConsultationView() {
                     <Group gap={6} mb={4}>
                       <FileJsonIcon size={14} />
                       <Text size='xs' fw={600} c='dimmed'>
-                        Payload JSON retornado por GET /score/:rut
+                        Payload
                       </Text>
                     </Group>
                     <Code block>
@@ -355,10 +330,8 @@ export default function ScoreConsultationView() {
               {!scoreResult && !errorState && (
                 <Card withBorder radius='md' p='xl' style={{ textAlign: 'center' }}>
                   <Stack align='center' gap='xs'>
-                    <ShieldCheckIcon size={40} opacity={0.4} />
-                    <Text fw={600}>Sin consulta activa</Text>
                     <Text size='sm' c='dimmed'>
-                      Ingresa un RUT o selecciona uno de los botones de prueba para consultar su score crediticio.
+                      Ingresa un RUT o selecciona uno de los botones de prueba para consultar tu riesgo financiero.
                     </Text>
                   </Stack>
                 </Card>
@@ -370,14 +343,14 @@ export default function ScoreConsultationView() {
         {history.length > 0 && (
           <Paper withBorder p='lg' radius='lg' shadow='xs'>
             <Title order={4} mb='sm'>
-              Consultas recientes en esta sesión (Verificación de Determinismo)
+              Historial de consultas
             </Title>
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>RUT</Table.Th>
-                  <Table.Th>Score Determinista</Table.Th>
-                  <Table.Th>Fecha (ISO UTC)</Table.Th>
+                  <Table.Th>Riesgo Financiero</Table.Th>
+                  <Table.Th>Fecha de Consulta</Table.Th>
                   <Table.Th>Acción</Table.Th>
                 </Table.Tr>
               </Table.Thead>
@@ -390,7 +363,7 @@ export default function ScoreConsultationView() {
                         {item.score} / 100
                       </Badge>
                     </Table.Td>
-                    <Table.Td>{item.fecha}</Table.Td>
+                    <Table.Td>{formatDisplayDate(item.fecha)}</Table.Td>
                     <Table.Td>
                       <Button
                         size='compact-xs'
