@@ -83,7 +83,7 @@ function getRiskEvaluation(score: number): {
 const SAMPLE_RUTS = [
   { rut: '12.345.678-9', name: 'Juan Pérez' },
   { rut: '76.543.210-3', name: 'Comercial Pepito SpA' },
-  { rut: '11.111.111-1', name: 'Tercero Externo' },
+  { rut: '11.111.111-1', name: 'Pepito Hernández' },
 ];
 
 export default function ScoreConsultationView() {
@@ -211,6 +211,8 @@ export default function ScoreConsultationView() {
                     <UnstyledButton
                       key={sample.rut}
                       className={classes.sampleRow}
+                      px='md'
+                      py='sm'
                       onClick={() => handleQuickRutSelect(sample.rut)}
                     >
                       <Group justify='space-between' align='center' wrap='nowrap'>
