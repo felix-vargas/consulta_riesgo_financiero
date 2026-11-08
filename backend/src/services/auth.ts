@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { promisify } from 'node:util';
 import jwt, { type SignOptions } from 'jsonwebtoken';
 import { getSettings } from '../config/settings.js';
 import { HttpException } from '../middlewares/exceptionHandler.js';
@@ -9,27 +10,32 @@ import type {
 } from '../models/types.js';
 import { formatRut, normalizeRut } from '../utils/rut.js';
 
-const PASSWORD_HASH_SALT = 'prontopaga:auth:scrypt:v1';
-const JWT_ISSUER = 'prontopaga-risk-api';
-const JWT_AUDIENCE = 'prontopaga-risk-spa';
+const scryptAsync = promisify(crypto.scrypt);
 
-function derivePasswordDigest(plainPassword: string): Buffer {
-    return crypto.scryptSync(plainPassword, PASSWORD_HASH_SALT, 32);
-}
+const PASSWORD_HASH_SALT = 'riesgo-financiero:auth:scrypt:v1';
+const JWT_ISSUER = 'riesgo-financiero-api';
+const JWT_AUDIENCE = 'riesgo-financiero-spa';
 
-function hashPassword(plainPassword: string): string {
-    return derivePasswordDigest(plainPassword).toString('hex');
+function hashPasswordAtStartup(plainPassword: string): string {
+    return crypto
+        .scryptSync(plainPassword, PASSWORD_HASH_SALT, 32)
+        .toString('hex');
 }
 
 /**
- * Constant-time password verification using scrypt + crypto.timingSafeEqual
- * to prevent timing side-channel attacks and avoid storing plaintext passwords.
+ * Asynchronous constant-time password verification using non-blocking crypto.scrypt
+ * (delegated to libuv's thread pool so the Node.js event loop is never blocked on requests)
+ * + crypto.timingSafeEqual to prevent timing side-channel attacks.
  */
-function verifyPasswordConstantTime(
+async function verifyPasswordConstantTime(
     candidatePassword: string,
     expectedHashHex: string
-): boolean {
-    const candidateBuf = derivePasswordDigest(candidatePassword);
+): Promise<boolean> {
+    const candidateBuf = (await scryptAsync(
+        candidatePassword,
+        PASSWORD_HASH_SALT,
+        32
+    )) as Buffer;
     const expectedBuf = Buffer.from(expectedHashHex, 'hex');
     if (candidateBuf.length !== expectedBuf.length) {
         return false;
@@ -41,7 +47,9 @@ function verifyPasswordConstantTime(
  * Pre-computed dummy hash evaluated when a username/RUT does not exist,
  * preventing user enumeration via response-time differences.
  */
-const DUMMY_PASSWORD_HASH = hashPassword('dummy-fallback-secret-password');
+const DUMMY_PASSWORD_HASH = hashPasswordAtStartup(
+    'dummy-fallback-secret-password'
+);
 
 /**
  * In-memory mock credentials for MVP evaluation (admin & user roles).
@@ -51,14 +59,14 @@ export const MOCK_USERS: readonly MockUser[] = [
     {
         id: 'usr-admin-01',
         username: 'admin',
-        passwordHash: hashPassword('AdminPassword123!'),
+        passwordHash: hashPasswordAtStartup('AdminPassword123!'),
         name: 'Ejecutivo',
         role: 'admin',
     },
     {
         id: 'usr-client-01',
         username: 'usuario',
-        passwordHash: hashPassword('UserPassword123!'),
+        passwordHash: hashPasswordAtStartup('UserPassword123!'),
         name: 'Juan Pérez',
         role: 'user',
         rut: '12.345.678-9',
@@ -66,7 +74,7 @@ export const MOCK_USERS: readonly MockUser[] = [
     {
         id: 'usr-client-02',
         username: 'empresa',
-        passwordHash: hashPassword('EmpresaPassword123!'),
+        passwordHash: hashPasswordAtStartup('EmpresaPassword123!'),
         name: 'Comercial Pepito SpA',
         role: 'user',
         rut: '76.543.210-3',
@@ -77,7 +85,10 @@ export class AuthService {
     /**
      * Authenticates a user against mock credentials (by username or RUT) and issues a signed JWT.
      */
-    public login(usernameOrRut: string, password: string): LoginResponse {
+    public async login(
+        usernameOrRut: string,
+        password: string
+    ): Promise<LoginResponse> {
         const normalizedInput = usernameOrRut.trim().toLowerCase();
         const normalizedRutInput = normalizeRut(usernameOrRut);
 
@@ -93,7 +104,10 @@ export class AuthService {
         const targetHash = matchedUser
             ? matchedUser.passwordHash
             : DUMMY_PASSWORD_HASH;
-        const isPasswordValid = verifyPasswordConstantTime(password, targetHash);
+        const isPasswordValid = await verifyPasswordConstantTime(
+            password,
+            targetHash
+        );
 
         if (!matchedUser || !isPasswordValid) {
             throw new HttpException(

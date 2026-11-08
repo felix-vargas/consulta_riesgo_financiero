@@ -3,7 +3,7 @@ import { extractApiError, loginRequest } from '@/lib/axios';
 import type { AuthUser } from '@/types/api';
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'prontopaga_risk_session_v1';
+const STORAGE_KEY = 'riesgo_financiero_session_v1';
 
 interface StoredSession {
     token: string;

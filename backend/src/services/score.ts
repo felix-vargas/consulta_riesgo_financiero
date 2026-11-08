@@ -15,7 +15,7 @@ export class ScoreService {
         const canonicalRut = normalizeRut(rawRut);
         const digest = crypto
             .createHash('sha256')
-            .update(`prontopaga:v59:${canonicalRut}`)
+            .update(`riesgo-financiero:v31:${canonicalRut}`)
             .digest();
 
         const uint32 = digest.readUInt32BE(0);

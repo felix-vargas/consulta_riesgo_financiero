@@ -14,7 +14,7 @@ export function getSettings(): Settings {
         port: Number(process.env.PORT ?? 4000),
         jwtSecret:
             process.env.JWT_SECRET ??
-            'prontopaga-riesgo-financiero-secret-key-2026',
+            'consulta-riesgo-financiero-secret-key-2026',
         jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '1h',
         corsOrigin: process.env.CORS_ORIGIN
             ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
