@@ -4,24 +4,25 @@ import {
   Alert,
   Badge,
   Button,
-  Card,
   Container,
   Divider,
   Group,
   Paper,
   PasswordInput,
   SimpleGrid,
-  Stack,
   Text,
   TextInput,
   Title,
+  UnstyledButton,
 } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import {
   AlertCircleIcon,
   ArrowRight,
+  ChevronRightIcon,
 } from 'lucide-react';
 import { useContext, useState } from 'react';
+import classes from './ScoreConsultationView.module.css';
 
 interface DemoAccount {
   label: string;
@@ -168,40 +169,36 @@ export default function LoginView() {
 
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='sm'>
           {DEMO_ACCOUNTS.map((acc) => (
-            <Card key={acc.loginIdentifier} withBorder padding='sm' radius='md'>
-              <Stack gap='xs' justify='space-between' h='100%'>
-                <div>
-                  <Badge
-                    size='xs'
-                    variant='dot'
-                    color={acc.role === 'admin' ? 'yellow' : 'teal'}
-                    mb={6}
-                  >
-                    {acc.role.toUpperCase()}
-                  </Badge>
-                  <Text fw={600} size='sm' lh={1.25}>
-                    {acc.label}
-                  </Text>
-                  <Text
-                    size='xs'
-                    c='dimmed'
-                    ff={acc.rut ? 'monospace' : undefined}
-                    mt={2}
-                  >
-                    {acc.subtitle}
-                  </Text>
-                </div>
-
-                <Button
-                  variant='light'
+            <UnstyledButton
+              key={acc.loginIdentifier}
+              className={classes.sampleRow}
+              px='md'
+              py='sm'
+              onClick={() => fillDemoAccount(acc)}
+            >
+              <Group justify='space-between' align='center' mb={8} wrap='nowrap'>
+                <Badge
                   size='xs'
-                  fullWidth
-                  onClick={() => fillDemoAccount(acc)}
+                  variant='dot'
+                  color={acc.role === 'admin' ? 'yellow' : 'teal'}
                 >
-                  Cargar
-                </Button>
-              </Stack>
-            </Card>
+                  {acc.role.toUpperCase()}
+                </Badge>
+                <ChevronRightIcon size={15} className={classes.chevron} />
+              </Group>
+
+              <Text fw={600} size='sm' lh={1.25}>
+                {acc.label}
+              </Text>
+              <Text
+                size='xs'
+                c='dimmed'
+                ff={acc.rut ? 'monospace' : undefined}
+                mt={2}
+              >
+                {acc.subtitle}
+              </Text>
+            </UnstyledButton>
           ))}
         </SimpleGrid>
       </Paper>
