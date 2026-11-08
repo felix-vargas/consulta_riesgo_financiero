@@ -22,7 +22,7 @@ export const MOCK_USERS: readonly MockUser[] = [
         password: 'UserPassword123!',
         name: 'Juan Pérez (Persona Natural)',
         role: 'user',
-        rut: '12.345.678-5',
+        rut: '12.345.678-9',
     },
     {
         id: 'usr-client-02',

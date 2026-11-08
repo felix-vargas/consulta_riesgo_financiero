@@ -1,5 +1,5 @@
 /**
- * Chilean RUT validation, normalization, and formatting utilities (Módulo 11).
+ * Chilean RUT validation, normalization, and formatting utilities.
  */
 
 /**
@@ -10,7 +10,7 @@ export function cleanRut(rawRut: string): string {
 }
 
 /**
- * Computes the expected Módulo 11 check digit ('0'-'9' or 'K') for a numeric RUT body.
+ * Computes the Módulo 11 check digit ('0'-'9' or 'K') for a numeric RUT body.
  */
 export function computeRutCheckDigit(bodyDigits: string): string {
     let sum = 0;
@@ -32,7 +32,21 @@ export function computeRutCheckDigit(bodyDigits: string): string {
 }
 
 /**
- * Validates a Chilean RUT string (supports with or without dots/hyphen) using Módulo 11.
+ * Checks whether a structurally valid RUT also satisfies the strict mathematical Módulo 11 check digit.
+ */
+export function hasValidMod11CheckDigit(rawRut: string): boolean {
+    if (!isValidRut(rawRut)) {
+        return false;
+    }
+    const cleaned = cleanRut(rawRut);
+    const body = cleaned.slice(0, -1);
+    const dv = cleaned.slice(-1);
+    return computeRutCheckDigit(body) === dv;
+}
+
+/**
+ * Validates that a string has a valid Chilean RUT structure (7 to 8 digits + check digit 0-9 or K,
+ * with or without dots/hyphen, e.g. "12.345.678-9", "12345678-9", "76.543.210-3").
  */
 export function isValidRut(rawRut: string): boolean {
     if (!rawRut || typeof rawRut !== 'string') {
@@ -40,27 +54,21 @@ export function isValidRut(rawRut: string): boolean {
     }
 
     const trimmed = rawRut.trim();
-    if (!/^[0-9]{1,2}(\.?[0-9]{3}){1,2}-?[0-9kK]$/.test(trimmed)) {
+    if (!/^[0-9]{1,2}(\.?[0-9]{3}){2}-?[0-9kK]$|^[0-9]{7,8}-?[0-9kK]$/.test(trimmed)) {
         return false;
     }
 
     const cleaned = cleanRut(trimmed);
-    if (cleaned.length < 7 || cleaned.length > 9) {
+    if (cleaned.length < 8 || cleaned.length > 9) {
         return false;
     }
 
     const body = cleaned.slice(0, -1);
-    const dv = cleaned.slice(-1);
-
-    if (!/^[1-9][0-9]*$/.test(body)) {
-        return false;
-    }
-
-    return computeRutCheckDigit(body) === dv;
+    return /^[1-9][0-9]{6,7}$/.test(body);
 }
 
 /**
- * Formats a RUT into canonical dotted representation (e.g., "12.345.678-5").
+ * Formats a RUT into canonical dotted representation (e.g., "12.345.678-9").
  */
 export function formatRut(rawRut: string): string {
     const cleaned = cleanRut(rawRut);
@@ -76,7 +84,7 @@ export function formatRut(rawRut: string): string {
 }
 
 /**
- * Returns the canonical hyphenated RUT without dots (e.g., "12345678-5") for comparisons and hashing.
+ * Returns the canonical hyphenated RUT without dots (e.g., "12345678-9") for comparisons and deterministic hashing.
  */
 export function normalizeRut(rawRut: string): string {
     const cleaned = cleanRut(rawRut);
