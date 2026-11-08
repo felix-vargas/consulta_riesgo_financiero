@@ -20,8 +20,6 @@ import { isNotEmpty, useForm } from '@mantine/form';
 import {
   AlertCircleIcon,
   ArrowRight,
-  ShieldAlertIcon,
-  UserCheckIcon,
 } from 'lucide-react';
 import { useContext, useState } from 'react';
 
@@ -198,13 +196,6 @@ export default function LoginView() {
                   variant='light'
                   size='xs'
                   fullWidth
-                  leftSection={
-                    acc.role === 'admin' ? (
-                      <ShieldAlertIcon size={14} />
-                    ) : (
-                      <UserCheckIcon size={14} />
-                    )
-                  }
                   onClick={() => fillDemoAccount(acc)}
                 >
                   Cargar

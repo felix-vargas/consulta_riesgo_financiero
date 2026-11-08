@@ -37,6 +37,8 @@ export const theme = createTheme({
     fontFamily:
         'Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
     headings: {
+        fontFamily:
+            'Montserrat, Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
         fontWeight: '600',
     },
     autoContrast: true,
