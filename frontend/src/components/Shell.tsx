@@ -11,10 +11,32 @@ import {
   Text,
   UnstyledButton,
 } from '@mantine/core';
-import { LogOutIcon, ShieldCheckIcon } from 'lucide-react';
+import { LogOutIcon } from 'lucide-react';
 import { PropsWithChildren, useContext } from 'react';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import classes from './Shell.module.css';
+
+function CreditCardCheckIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={2}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    >
+      <path d='M12 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5.5' />
+      <path d='M3 10h18' />
+      <path d='M7 15h.01' />
+      <path d='M11 15h2' />
+      <path d='m16 19 2 2 4-4' />
+    </svg>
+  );
+}
 
 export default function Shell({ children }: PropsWithChildren) {
   const { user, logout } = useContext(AuthContext);
@@ -24,7 +46,7 @@ export default function Shell({ children }: PropsWithChildren) {
       <AppShell.Header className={classes.header}>
         <Container className={classes['header-container']} size='md'>
           <div className={classes.brand}>
-            <ShieldCheckIcon size={24} />
+            <CreditCardCheckIcon size={24} />
             <div>
               <Text fw={600} size='lg' lh={1.1} c='white'>
                 Consulta de Riesgo Financiero
